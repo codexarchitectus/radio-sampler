@@ -5,8 +5,10 @@ A Python tool for concurrently sampling multiple internet radio streams and capt
 ## Features
 
 - Fetch radio station URLs from the [Radio Browser API](https://www.radio-browser.info/) or use a custom list
+- Content filtering by genre/tag, language, country, and station name
 - Concurrent stream sampling using async I/O
 - Automatic silence detection and filtering
+- **DSP Effects Processing**: Apply randomized creative audio effects (distortion, reverb, modulation, filters)
 - Configurable clip duration, timeout, and quality settings
 - Continuous sampling mode for long-running data collection
 - High-quality WAV output (44.1kHz, stereo, 16-bit)
@@ -45,6 +47,11 @@ pip install -r requirements.txt
 Or manually:
 ```bash
 pip install requests
+```
+
+**Optional (for DSP effects):**
+```bash
+pip install pedalboard numpy
 ```
 
 ## Quick Start
@@ -109,6 +116,12 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 - `--silence-min-duration SECONDS` - Minimum silence duration to detect (default: `0.3`)
 - `--max-silence-ratio RATIO` - Max allowed silence ratio, 0.0-1.0 (default: `0.75`)
 
+#### DSP Effects (optional, requires pedalboard)
+- `--apply-effects` - Apply random DSP effect chains to captured audio
+  - Saves both original and processed versions
+  - Randomly chains 2-4 effects: distortion, reverb, delay, chorus, phaser, filters, pitch shifting
+  - All parameters randomized for creative exploration
+
 #### Loop Mode
 - `--loop` - Enable continuous sampling
 - `--interval SECONDS` - Seconds between sampling cycles (default: `60.0`)
@@ -141,6 +154,17 @@ python3 radio-sampler.py --fetch --name "BBC Radio" --output-dir ./bbc-samples
 ```bash
 python3 radio-sampler.py --fetch --tag rock --language english --country usa \
   --codec AAC --bitrate-min 128 --limit 50 --output-dir ./rock-usa
+```
+
+**Apply creative DSP effects to jazz stations:**
+```bash
+python3 radio-sampler.py --fetch --tag jazz --output-dir ./jazz-effects --apply-effects
+```
+
+**Process ambient/electronic music with random effect chains:**
+```bash
+python3 radio-sampler.py --fetch --tag ambient --language english \
+  --output-dir ./ambient-processed --apply-effects --duration 8
 ```
 
 **High-quality AAC stations with strict silence filtering:**
@@ -200,15 +224,28 @@ clip_20231120_143052_ch3.wav
 
 Format: `clip_YYYYMMDD_HHMMSS_chN.wav` where N is the station index.
 
-All files are 44.1kHz stereo WAV (16-bit signed PCM).
+**With `--apply-effects` enabled:**
+```
+clip_20231120_143052_ch1_original.wav  (normalized to -3 dB peak)
+clip_20231120_143052_ch1_effected.wav  (effected + normalized to -3 dB peak)
+clip_20231120_143052_ch2_original.wav  (normalized to -3 dB peak)
+clip_20231120_143052_ch2_effected.wav  (effected + normalized to -3 dB peak)
+```
+
+All files are 44.1kHz stereo WAV (16-bit signed PCM), normalized to -3 dB peak level for consistent loudness.
 
 ## How It Works
 
-1. **Station Discovery**: Fetches station URLs from Radio Browser API or reads from file
+1. **Station Discovery**: Fetches station URLs from Radio Browser API with optional content filters or reads from file
 2. **Concurrent Capture**: Spawns async FFmpeg subprocesses for each stream simultaneously
 3. **Silence Detection**: FFmpeg's silencedetect filter analyzes audio during capture
 4. **Quality Filtering**: Post-processing analyzes silence ratio and discards poor clips
-5. **Output**: Successful clips are saved as WAV files
+5. **DSP Processing** (optional): Applies random effect chains using Spotify's Pedalboard library
+   - Randomly selects 2-4 effects from distortion, reverb, delay, modulation, filter, and pitch shift categories
+   - All parameters (drive, room size, rate, cutoff, pitch shift, etc.) randomized within musical ranges
+   - Compression applied to prevent clipping
+6. **Normalization**: All audio normalized to -3 dB peak level for consistent loudness across samples
+7. **Output**: Successful clips saved as WAV files (original + effected if `--apply-effects` enabled)
 
 Streams that timeout, fail to connect, or exceed the silence threshold are logged and skipped.
 

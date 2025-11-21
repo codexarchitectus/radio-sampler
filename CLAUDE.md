@@ -56,6 +56,30 @@ python3 radio-sampler.py --fetch --name "BBC" --output-dir ./output
 python3 radio-sampler.py --fetch --tag classical --language french --country france --codec MP3 --bitrate-min 128 --output-dir ./output
 ```
 
+### DSP Effects Processing
+
+Apply random audio effects to captured clips for creative exploration:
+```bash
+# Enable random DSP effects (saves both original and processed versions)
+python3 radio-sampler.py --fetch --tag jazz --output-dir ./output --apply-effects
+
+# Combine with content filtering for targeted creative processing
+python3 radio-sampler.py --fetch --tag rock --language english --output-dir ./output --apply-effects
+```
+
+Each clip generates two files:
+- `clip_YYYYMMDD_HHMMSS_chN_original.wav` - Normalized capture (-3 dB peak)
+- `clip_YYYYMMDD_HHMMSS_chN_effected.wav` - Randomly processed and normalized version
+
+Effects include randomized chains of 2-4 effects from these categories:
+- **Distortion**: Overdrive, bitcrushing (drive: 10-40dB, bit depth: 4-12 bits)
+- **Spatial**: Reverb, delay (room size: 0.3-0.95, delay: 0.1-0.5s)
+- **Modulation**: Chorus, phaser (rate: 0.5-5Hz, depth: 0.2-0.8)
+- **Filtering**: Low/high/band-pass filters (cutoff: 200-5000Hz, resonance: 0.1-0.7)
+- **Pitch**: Pitch shifting (±1-12 semitones, extreme mode: ±7-24 semitones)
+
+**Normalization**: All captured audio is normalized to -3 dB peak level for consistent loudness across samples.
+
 ### Common Parameters
 
 - `--duration 4.0`: Clip length in seconds
@@ -74,6 +98,9 @@ The script requires:
 - Python 3.7+ (uses asyncio.run)
 - FFmpeg binary in PATH (checked at startup)
 - Python packages: Install via `pip install -r requirements.txt`
+  - `requests`: API communication
+  - `pedalboard` (optional): DSP audio effects processing
+  - `numpy` (optional): Required by pedalboard for audio manipulation
 
 ## Key Implementation Details
 
