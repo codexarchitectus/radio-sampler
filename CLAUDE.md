@@ -10,7 +10,7 @@ Radio Sampler is a single-file Python application that concurrently samples mult
 
 The application is structured around these key components:
 
-- **API Integration** (`fetch_station_urls`): Retrieves radio station URLs from Radio Browser API with filtering by codec, bitrate, and operational status
+- **API Integration** (`fetch_station_urls`): Retrieves radio station URLs from Radio Browser API with filtering by codec, bitrate, operational status, and content (tags, language, country, station name)
 - **Async Stream Processing** (`capture_stream`, `process_all_streams`): Handles concurrent FFmpeg subprocess execution for multiple streams using asyncio
 - **Silence Detection** (`silence_detected`): Parses FFmpeg stderr output to calculate silence ratios and discard clips exceeding the threshold
 - **Main Loop** (`main`): Orchestrates single-run or continuous sampling cycles with configurable intervals
@@ -36,6 +36,26 @@ Run in loop mode with custom interval:
 python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 120.0
 ```
 
+### Content Filtering
+
+Filter stations by specific content:
+```bash
+# Jazz stations only
+python3 radio-sampler.py --fetch --tag jazz --output-dir ./output
+
+# English-language news stations
+python3 radio-sampler.py --fetch --tag news --language english --output-dir ./output
+
+# Stations from a specific country
+python3 radio-sampler.py --fetch --country usa --output-dir ./output
+
+# Search by station name
+python3 radio-sampler.py --fetch --name "BBC" --output-dir ./output
+
+# Combine filters for precise targeting
+python3 radio-sampler.py --fetch --tag classical --language french --country france --codec MP3 --bitrate-min 128 --output-dir ./output
+```
+
 ### Common Parameters
 
 - `--duration 4.0`: Clip length in seconds
@@ -43,6 +63,10 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 120.0
 - `--silence-threshold -40dB`: FFmpeg silencedetect noise level
 - `--max-silence-ratio 0.75`: Discard clips with >75% silence
 - `--codec MP3 --bitrate-min 64 --limit 500`: API filtering options
+- `--tag jazz`: Filter by genre/content tag (e.g., jazz, news, classical, rock)
+- `--language english`: Filter by broadcast language
+- `--country usa`: Filter by country
+- `--name "BBC"`: Filter by station name (partial match)
 
 ## Dependencies
 

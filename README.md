@@ -93,6 +93,12 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 - `--bitrate-min KBPS` - Minimum bitrate in kbps (default: `64`)
 - `--limit COUNT` - Maximum number of stations (default: `500`)
 
+#### Content Filtering (when using `--fetch`)
+- `--tag TAG` - Filter by genre/content tag (e.g., `jazz`, `news`, `classical`, `rock`, `pop`)
+- `--name NAME` - Filter by station name, partial match (e.g., `"BBC"`, `"Radio"`)
+- `--language LANG` - Filter by broadcast language (e.g., `english`, `spanish`, `french`)
+- `--country COUNTRY` - Filter by country (e.g., `usa`, `uk`, `france`, `germany`)
+
 #### Output Settings
 - `--output-dir DIR` - Output directory for WAV clips (required, created if missing)
 - `--duration SECONDS` - Clip duration in seconds (default: `4.0`)
@@ -108,6 +114,34 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 - `--interval SECONDS` - Seconds between sampling cycles (default: `60.0`)
 
 ### Examples
+
+**Sample jazz stations only:**
+```bash
+python3 radio-sampler.py --fetch --tag jazz --output-dir ./jazz-samples
+```
+
+**English-language news stations with high quality:**
+```bash
+python3 radio-sampler.py --fetch --tag news --language english \
+  --codec MP3 --bitrate-min 128 --output-dir ./news-clips
+```
+
+**Classical music from European stations:**
+```bash
+python3 radio-sampler.py --fetch --tag classical --country france \
+  --output-dir ./classical-eu
+```
+
+**Search for specific stations by name:**
+```bash
+python3 radio-sampler.py --fetch --name "BBC Radio" --output-dir ./bbc-samples
+```
+
+**Combine multiple filters for precise targeting:**
+```bash
+python3 radio-sampler.py --fetch --tag rock --language english --country usa \
+  --codec AAC --bitrate-min 128 --limit 50 --output-dir ./rock-usa
+```
 
 **High-quality AAC stations with strict silence filtering:**
 ```bash

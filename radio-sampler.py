@@ -38,7 +38,16 @@ def check_ffmpeg() -> bool:
 # ----------------------------------------------------------
 # Fetch station URLs from Radio Browser API
 # ----------------------------------------------------------
-def fetch_station_urls(server: str, codec: str, bitrate_min: int, limit: int) -> List[str]:
+def fetch_station_urls(
+    server: str,
+    codec: str,
+    bitrate_min: int,
+    limit: int,
+    tag: Optional[str] = None,
+    name: Optional[str] = None,
+    language: Optional[str] = None,
+    country: Optional[str] = None
+) -> List[str]:
     url = f"https://{server}/json/stations/search"
 
     params = {
@@ -48,6 +57,16 @@ def fetch_station_urls(server: str, codec: str, bitrate_min: int, limit: int) ->
         "hidebroken": "true",
         "limit": limit
     }
+
+    # Add optional content filters
+    if tag:
+        params["tag"] = tag
+    if name:
+        params["name"] = name
+    if language:
+        params["language"] = language
+    if country:
+        params["country"] = country
 
     headers = {
         "User-Agent": USER_AGENT
@@ -204,6 +223,12 @@ def parse_args():
     p.add_argument("--bitrate-min", type=int, default=64, help="Minimum bitrate")
     p.add_argument("--limit", type=int, default=500, help="Limit station count")
 
+    # Content filtering options
+    p.add_argument("--tag", help="Filter by tag/genre (e.g., jazz, news, classical, rock)")
+    p.add_argument("--name", help="Filter by station name (partial match)")
+    p.add_argument("--language", help="Filter by language (e.g., english, spanish, french)")
+    p.add_argument("--country", help="Filter by country (e.g., usa, uk, france)")
+
     p.add_argument("--urls", help="Optional text file with station URLs if not fetching")
 
     p.add_argument("--output-dir", required=True, help="Output directory for WAV clips")
@@ -238,7 +263,11 @@ async def main():
             args.server,
             args.codec,
             args.bitrate_min,
-            args.limit
+            args.limit,
+            tag=args.tag,
+            name=args.name,
+            language=args.language,
+            country=args.country
         )
     else:
         if not args.urls or not os.path.isfile(args.urls):
