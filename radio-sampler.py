@@ -198,7 +198,7 @@ def parse_args():
     p = argparse.ArgumentParser(description="Python Radio Sampler (single-file version)")
     p.add_argument("--fetch", action="store_true",
                    help="Fetch station URLs from Radio Browser API")
-    p.add_argument("--server", default="nl1.api.radio-browser.info",
+    p.add_argument("--server", default="all.api.radio-browser.info",
                    help="API mirror server")
     p.add_argument("--codec", default="MP3", help="Codec filter")
     p.add_argument("--bitrate-min", type=int, default=64, help="Minimum bitrate")

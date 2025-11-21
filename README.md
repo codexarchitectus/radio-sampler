@@ -87,7 +87,8 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 - `--urls FILE` - Read station URLs from a text file (one per line)
 
 #### API Filtering (when using `--fetch`)
-- `--server SERVER` - API mirror server (default: `nl1.api.radio-browser.info`)
+- `--server SERVER` - API mirror server (default: `all.api.radio-browser.info`)
+  - Alternative servers: `de1.api.radio-browser.info`, `fr1.api.radio-browser.info`
 - `--codec CODEC` - Codec filter (default: `MP3`, options: `AAC`, `OGG`, etc.)
 - `--bitrate-min KBPS` - Minimum bitrate in kbps (default: `64`)
 - `--limit COUNT` - Maximum number of stations (default: `500`)
@@ -192,8 +193,9 @@ Streams that timeout, fail to connect, or exceed the silence threshold are logge
 - Lower `--max-silence-ratio` (e.g., `0.5` instead of `0.75`)
 - Adjust `--silence-threshold` to be less sensitive (e.g., `-30dB`)
 
-**No stations returned from API**
-- Try a different `--server` (see [Radio Browser servers](https://www.radio-browser.info/))
+**No stations returned from API / DNS resolution errors**
+- Try a different `--server`: `--server all.api.radio-browser.info` or `--server de1.api.radio-browser.info`
+- See [Radio Browser servers](https://www.radio-browser.info/) for more options
 - Relax filters: lower `--bitrate-min`, remove `--codec` restriction
 
 ## License
