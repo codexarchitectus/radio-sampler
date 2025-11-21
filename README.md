@@ -102,6 +102,8 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 
 #### Content Filtering (when using `--fetch`)
 - `--tag TAG` - Filter by genre/content tag (e.g., `jazz`, `news`, `classical`, `rock`, `pop`)
+  - **Multiple tags**: Use comma-separated values (e.g., `"jazz,smooth"`)
+  - **ALL tags must match** - finds stations tagged with both/all specified tags (AND logic)
 - `--name NAME` - Filter by station name, partial match (e.g., `"BBC"`, `"Radio"`)
 - `--language LANG` - Filter by broadcast language (e.g., `english`, `spanish`, `french`)
 - `--country COUNTRY` - Filter by country (e.g., `usa`, `uk`, `france`, `germany`)
@@ -131,6 +133,15 @@ python3 radio-sampler.py --fetch --output-dir ./output --loop --interval 300
 **Sample jazz stations only:**
 ```bash
 python3 radio-sampler.py --fetch --tag jazz --output-dir ./jazz-samples
+```
+
+**Multiple tags (stations must have ALL specified tags):**
+```bash
+# Find stations tagged with both "jazz" AND "smooth"
+python3 radio-sampler.py --fetch --tag "jazz,smooth" --output-dir ./smooth-jazz
+
+# Find stations with "electronic" AND "dance" tags
+python3 radio-sampler.py --fetch --tag "electronic,dance" --output-dir ./edm
 ```
 
 **English-language news stations with high quality:**

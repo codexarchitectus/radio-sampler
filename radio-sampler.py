@@ -254,7 +254,12 @@ def fetch_station_urls(
 
     # Add optional content filters
     if tag:
-        params["tag"] = tag
+        # Support multiple tags with comma separation (tagList parameter)
+        # All tags must match (AND logic)
+        if ',' in tag:
+            params["tagList"] = tag
+        else:
+            params["tag"] = tag
     if name:
         params["name"] = name
     if language:

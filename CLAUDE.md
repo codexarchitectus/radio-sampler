@@ -43,6 +43,9 @@ Filter stations by specific content:
 # Jazz stations only
 python3 radio-sampler.py --fetch --tag jazz --output-dir ./output
 
+# Multiple tags (ALL must match - finds stations with both jazz AND smooth tags)
+python3 radio-sampler.py --fetch --tag "jazz,smooth" --output-dir ./output
+
 # English-language news stations
 python3 radio-sampler.py --fetch --tag news --language english --output-dir ./output
 
@@ -88,6 +91,7 @@ Effects include randomized chains of 2-4 effects from these categories:
 - `--max-silence-ratio 0.75`: Discard clips with >75% silence
 - `--codec MP3 --bitrate-min 64 --limit 500`: API filtering options
 - `--tag jazz`: Filter by genre/content tag (e.g., jazz, news, classical, rock)
+- `--tag "jazz,smooth"`: Multiple tags (comma-separated, ALL must match)
 - `--language english`: Filter by broadcast language
 - `--country usa`: Filter by country
 - `--name "BBC"`: Filter by station name (partial match)
